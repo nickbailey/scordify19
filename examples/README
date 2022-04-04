@@ -1,0 +1,5 @@
+gh.ly: a short clarinet study by Graham Hair in 19EDO
+
+       To build: ../scordify19 "a,," < gh.ly > gh19.ly
+                 and run Lilypond on gh19.ly
+
