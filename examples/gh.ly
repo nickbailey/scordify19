@@ -1,7 +1,8 @@
+\version"2.22.0"
 \new StaffGroup
 <<
 
-    \new Staff \relative c, {
+    \new Staff \relative c' {
 
 	    \override Score.MetronomeMark #'padding = #'4.0
         \tempo 4=120
@@ -18,8 +19,9 @@
         \time 3/2
         \clef treble
 		g2( d' a'
-
+	
 		\time 3/8
+
 		c4.
 
 		\time 2/4

@@ -4,12 +4,13 @@
 #include <stdio.h>
 #include <ctype.h>
 static int noteNum, accidentalOffset, octaveOffset; /* indexes lookup table */
+static int lastNote = 3;  /* In relative mode, the octave might have to change for big steps */
 static int octave;    /* octave number from score ("'" counts +ve, "," -ve) */
 static int origin;              /* 19-ET note number of the keyboard origin */
 static int baseIndex12ET;     /* Basis for lookups into 12ET spelling array */
 static int octave12ET;                    /* Octave of the 12ET origin note */
 static int relativeMode = 0;  /* assume we're not in relative mode at start */
-static int debug = 0;
+static int debug = 1;
 
 /* Forward Declarations */
 static int convert12ETto19ET(int, int, int);
@@ -39,8 +40,27 @@ OCTAVE     (","|"'")*
     accidentalOffset = 0;
     octave = 0;
     /* Note has three possible qualifiers, #, None (natural), or b */
+    lastNote = noteNum;
     noteNum = yytext[yyleng-1] - 'c';
 	if (noteNum < 0) noteNum += 7;
+	if (relativeMode) {
+		/* Depending on the step, we may have to adjust the current octave */
+		int step = noteNum - lastNote;
+		int octaveChanged = 0;
+		if (step > 3) {
+			octave--;
+			octaveChanged = 1;
+		}
+		if (step < -3) {
+			octave++;
+			octaveChanged = 1;
+		}
+		if (1 || debug && octaveChanged) {
+			fprintf(stderr, "Melodic interval %d (%c-%c): octave is now %d\n",
+					step, lastNote+'c'-7*(lastNote>4), noteNum+'c'-7*(noteNum>4), octave);
+			octaveChanged = 0;
+		}
+	}
 	yytext[yyleng-1] = '\0';
 	fputs(yytext, yyout);
     BEGIN(IsNote);
@@ -62,10 +82,11 @@ OCTAVE     (","|"'")*
 
   {OCTAVE}   {
 	  /* Matches octave */
-	  octave = yytext[0]=='\'' ? yyleng : -yyleng;
+	  int octaveRead = yytext[0]=='\'' ? yyleng : -yyleng;
+	  octave = relativeMode ? octave + octaveRead : octaveRead;
     }
 
-  "!"|"?"    { /* Just ignore cautionary and obligator accidentals */
+  "!"|"?"    { /* Just ignore cautionary and obligatory accidentals */
 	           /* All notes have mandatory accidentals in the output anyway */
     }
 
