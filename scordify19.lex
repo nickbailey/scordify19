@@ -34,14 +34,15 @@ OCTAVE     (","|"'")*
 	   to absolute in order to preserve sanity */
   }
 
-((^{NAME})|({TERMINATOR}{NAME}))/{ACCIDENTAL}?{OCTAVE}("!"|"?")?{DURATION}?{TERMINATOR}  {
+{NAME}/{ACCIDENTAL}?{OCTAVE}("!"|"?")?{DURATION}?{TERMINATOR}  {
     /* Matches note, new state. */
     /* Set default accidental and octave recorded in the input file */
     accidentalOffset = 0;
     octave = 0;
+
     /* Note has three possible qualifiers, #, None (natural), or b */
     lastNote = noteNum;
-    noteNum = yytext[yyleng-1] - 'c';
+    noteNum = yytext[yyleng-1] - 'c'; // yyleng should always be 1
 	if (noteNum < 0) noteNum += 7;
 	if (relativeMode) {
 		/* Depending on the step, we may have to adjust the current octave */
