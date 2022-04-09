@@ -10,7 +10,7 @@ static int origin;              /* 19-ET note number of the keyboard origin */
 static int baseIndex12ET;     /* Basis for lookups into 12ET spelling array */
 static int octave12ET;                    /* Octave of the 12ET origin note */
 static int relativeMode = 0;  /* assume we're not in relative mode at start */
-static int debug = 1;
+static int debug = 0;
 
 /* Forward Declarations */
 static int convert12ETto19ET(int, int, int);
@@ -34,7 +34,7 @@ OCTAVE     (","|"'")*
 	   to absolute in order to preserve sanity */
   }
 
-(^|{TERMINATOR}){NAME}/{ACCIDENTAL}?{OCTAVE}("!"|"?")?{DURATION}?{TERMINATOR}  {
+((^{NAME})|({TERMINATOR}{NAME}))/{ACCIDENTAL}?{OCTAVE}("!"|"?")?{DURATION}?{TERMINATOR}  {
     /* Matches note, new state. */
     /* Set default accidental and octave recorded in the input file */
     accidentalOffset = 0;
