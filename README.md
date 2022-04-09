@@ -8,3 +8,8 @@ onto a conventional keyboard by retuning it).
 ### Building ###
 Requres lex and a compiler.
 Type **make**. That is all.
+
+### Testing ###
+Running unit tests requires *shunit2* to be installed.
+
+**make tests** runs the unit tests.
