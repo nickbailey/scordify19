@@ -8,3 +8,7 @@ scordify19:	lex.yy.o
 
 lex.yy.c:	scordify19.lex
 	$(LEX) $<
+
+.PHONY: tests
+tests:	$(PROGNAME)
+	( cd tests ; ./test.sh | tee tests.log )
