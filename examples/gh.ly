@@ -97,9 +97,9 @@
 		<a c>1
                 \once\override Tie #'control-points = 
                   #'((1.6 . -0.5) (4 . 0.5) (5 . -3.3) (8.9 . -1.5))
-		<f g>~
-		<g a>~
-		<g a>4.~
-		<f g bes c>1.
+                <ees'! fis'!>~
+                <fis'! a'!>~
+                <fis'! a'!>4.~
+                <ees'! fis'! b'! d''!>1.
     }
 >>

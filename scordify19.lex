@@ -36,6 +36,11 @@ OCTAVE     (","|"'")*
     /* Don't echo lilypond's relative directive: we'll be converting
 	   to absolute in order to preserve sanity */
   }
+  
+"\\"[a-zA-Z]+ {
+	/* Don't change commands */
+	ECHO;
+}
 
 {NAME}/{ACCIDENTAL}?{OCTAVE}("!"|"?")?{DURATION}?{TERMINATOR}  {
     /* Matches note, new state. */
