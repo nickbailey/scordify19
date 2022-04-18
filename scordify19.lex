@@ -7,7 +7,7 @@
 #include "relative.h"
 
 static int noteNum, accidentalOffset, octaveOffset; /* indexes lookup table */
-static int lastNote = 3;  /* In relative mode, the octave might have to change for big steps */
+static int lastNote = -1;  /* In relative mode, the octave might have to change for big steps */
 static int octave;    /* octave number from score ("'" counts +ve, "," -ve) */
 static int origin;              /* 19-ET note number of the keyboard origin */
 static int baseIndex12ET;     /* Basis for lookups into 12ET spelling array */
@@ -41,7 +41,7 @@ OCTAVE     (","|"'")*
     /* Matches note, new state. */
     /* Set default accidental and octave recorded in the input file */
     accidentalOffset = 0;
-    octave = 0;
+    //octave = 0;
 
     /* Note has three possible qualifiers, #, None (natural), or b */
     lastNote = noteNum;
@@ -58,6 +58,8 @@ OCTAVE     (","|"'")*
 				lastNote+'c'-7*(lastNote>4), noteNum+'c'-7*(noteNum>4), octaveAdjust, octave);
 		}
 
+	} else {
+		octave = 0;
 	}
 	yytext[yyleng-1] = '\0';
 	fputs(yytext, yyout);
@@ -125,9 +127,17 @@ OCTAVE     (","|"'")*
 	  else
 	    octaveOffset = yytext[1]=='\'' ? yyleng-1 : 1-yyleng;
 
-	  octave = octaveOffset;  
+	  octave = octaveOffset;
+	  noteNum = -1; // Don't do octave offset in relative mode on first note
+
+	  if (debug) fprintf(
+		stderr,
+		"Relative directive sets octave to %d\n", octaveOffset
+	  );
+
 	  BEGIN(INITIAL);
     }
+    
   .|\n     {
       /* If there's no note, we'll assume this \relative has no argument */
       unput(yytext[0]);
