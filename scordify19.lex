@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#include "relative.h"
+
 static int noteNum, accidentalOffset, octaveOffset; /* indexes lookup table */
 static int lastNote = 3;  /* In relative mode, the octave might have to change for big steps */
 static int octave;    /* octave number from score ("'" counts +ve, "," -ve) */
@@ -10,7 +13,7 @@ static int origin;              /* 19-ET note number of the keyboard origin */
 static int baseIndex12ET;     /* Basis for lookups into 12ET spelling array */
 static int octave12ET;                    /* Octave of the 12ET origin note */
 static int relativeMode = 0;  /* assume we're not in relative mode at start */
-static int debug = 0;
+int debug = 0;     /* Global debug flag */
 
 /* Forward Declarations */
 static int convert12ETto19ET(int, int, int);
@@ -45,22 +48,16 @@ OCTAVE     (","|"'")*
     noteNum = yytext[yyleng-1] - 'c'; // yyleng should always be 1
 	if (noteNum < 0) noteNum += 7;
 	if (relativeMode) {
-		/* Depending on the step, we may have to adjust the current octave */
-		int step = noteNum - lastNote;
-		int octaveChanged = 0;
-		if (step > 3) {
-			octave--;
-			octaveChanged = 1;
+
+	/* Depending on the step, we may have to adjust the current octave */
+		int octaveAdjust = relativeAdjustOctave(lastNote, noteNum);
+		octave += octaveAdjust;
+		
+		if (debug) {
+			fprintf(stderr, "Melodic interval %c-%c: octave adjusted by %d, now %d\n",
+				lastNote+'c'-7*(lastNote>4), noteNum+'c'-7*(noteNum>4), octaveAdjust, octave);
 		}
-		if (step < -3) {
-			octave++;
-			octaveChanged = 1;
-		}
-		if (1 || debug && octaveChanged) {
-			fprintf(stderr, "Melodic interval %d (%c-%c): octave is now %d\n",
-					step, lastNote+'c'-7*(lastNote>4), noteNum+'c'-7*(noteNum>4), octave);
-			octaveChanged = 0;
-		}
+
 	}
 	yytext[yyleng-1] = '\0';
 	fputs(yytext, yyout);
@@ -127,6 +124,8 @@ OCTAVE     (","|"'")*
 	    octaveOffset = 0;
 	  else
 	    octaveOffset = yytext[1]=='\'' ? yyleng-1 : 1-yyleng;
+
+	  octave = octaveOffset;  
 	  BEGIN(INITIAL);
     }
   .|\n     {

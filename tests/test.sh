@@ -5,7 +5,7 @@ shopt -s expand_aliases
 SCORDIFY19="../scordify19"
 
 # To run with debugging output:
-# SCORDIFY19="../scordify19 -d"
+#SCORDIFY19="../scordify19 -d"
 
 #oneTimeSetUp() { }
 
@@ -35,4 +35,4 @@ test_octave_interval_absolute () {
 
 . shunit2
 
- { "c", "cis", "d", "ees", "e", "f", "fis", "g", "aes", "a", "bes", "b" };
+# { "c", "cis", "d", "ees", "e", "f", "fis", "g", "aes", "a", "bes", "b" };

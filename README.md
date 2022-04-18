@@ -5,9 +5,6 @@ in Lilypond so that it can performed on a _scordatura keyboard_
 (which is to say, one in which the 19 tones of the octave are mapped
 onto a conventional keyboard by retuning it).
 
-Note that the supported syntax is a minute subset of lilypond's. This version
-doesn't work with "relative mode" input.
-
 ### Building ###
 Requres lex and a compiler.
 Type **make**. That is all.
