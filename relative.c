@@ -9,7 +9,7 @@ static const int adjust8ve [7][7] =  {
         {  0,  0,  0,  0,  0,  0,  0}  // G 6
 };
 
-const int relativeAdjustOctave(int last, int current)
+const int relativeAdjustOctave(const int last, const int current)
 {
         // Don't adjust octave if last note is undefined.
         return last < 0 ? 0 : adjust8ve[last][current];

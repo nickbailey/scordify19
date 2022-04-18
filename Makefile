@@ -11,27 +11,30 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 CC := gcc
 COMPILE.c = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 
-$(PROGNAME):	$(OBJS)
+$(PROGNAME) :: $(OBJS)
 	$(LINK.c) -o $(PROGNAME) $^ -l$(LEXLIB)
 
-lex.yy.c:	scordify19.lex
+lex.yy.c : scordify19.lex
 	$(LEX) $<
 
-%.o: %.c $(DEPDIR)/%.d | $(DEPDIR)
+%.o :: %.c $(DEPDIR)/%.d
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 
 .PHONY: tests
-tests:	$(PROGNAME)
+tests: $(PROGNAME)
 	( cd tests ; ./test.sh 2>&1 | tee -a tests.log )
 
 
 .PHONY: clean
-	rm *.o $(DEPDIR)/*.d $(PROGNAME)
+clean:
+	rm -f  *.o $(PROGNAME) -r $(DEPDIR)
 
 $(DEPDIR):
 	mkdir -p $@ 
 
 $(DEPFILES):
+
+*.c *.o : | $(DEPDIR)
 
 include $(wildcard $(DEPFILES))

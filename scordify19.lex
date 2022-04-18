@@ -141,7 +141,9 @@ OCTAVE     (","|"'")*
   .|\n     {
       /* If there's no note, we'll assume this \relative has no argument */
       unput(yytext[0]);
-      octaveOffset = 1;
+      // NOTE: lilypond behaviour is to set the octave from the next score note
+      // but for now we'l just set it to 1.
+      octaveOffset = octave = 1;
 	  BEGIN(INITIAL);
     }
 }
