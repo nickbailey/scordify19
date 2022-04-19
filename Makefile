@@ -2,7 +2,7 @@
 
 LEXLIB := fl
 PROGNAME := scordify19
-SRCS := lex.yy.c relative.c
+SRCS := main.c lex.yy.c note_functions.c
 OBJS := $(SRCS:%.c=%.o)
 DEPFILES := $(CSRCS:%.cxx=$(DEPDIR)/%.d)
 
